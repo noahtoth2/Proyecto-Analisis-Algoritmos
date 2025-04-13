@@ -1,7 +1,7 @@
 # main.py
 
 import pygame
-from parser import read_board_file
+from board_parser import read_board_file
 from board import Board
 from ui import draw_board, CELL_SIZE, MARGIN, FONT_SIZE
 
@@ -27,17 +27,23 @@ def main():
     running = True
     dragging = False
     current_number = None
+    row , col = None, None
+    row1, col1 = None, None
 
     while running:
         draw_board(screen, board, font)
         pygame.display.flip()
 
         for event in pygame.event.get():
+
+
             if event.type == pygame.QUIT:
                 running = False
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 row, col = get_cell_from_mouse(event.pos)
+                row1,col1 = row,col
+                print(row, col, row1, col1)
                 if 0 <= row < rows and 0 <= col < cols:
                     value = board.grid[row][col]
                     if value is not None:
@@ -47,9 +53,12 @@ def main():
 
             elif event.type == pygame.MOUSEMOTION and dragging:
                 row, col = get_cell_from_mouse(event.pos)
-                if board.is_valid_move(row, col, current_number):
-                    if (row, col) != board.paths[current_number][-1]:
-                        board.add_to_path(current_number, (row, col))
+                if row != row1 or col != col1:
+                    if board.is_valid_move(row, col,row1, col1, current_number):
+                        if (row, col) != board.paths[current_number][-1]:
+                            row1, col1 = row, col
+                            print(row, col, row1, col1)
+                            board.add_to_path(current_number, (row, col))
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 dragging = False

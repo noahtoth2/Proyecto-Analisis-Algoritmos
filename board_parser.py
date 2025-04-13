@@ -1,4 +1,4 @@
-# parser.py
+# board_parser.py
 
 def read_board_file(filename):
     with open(filename, "r") as file:
