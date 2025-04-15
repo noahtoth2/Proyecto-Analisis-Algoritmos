@@ -32,3 +32,16 @@ class Board:
     def remove_last_from_path(self, number):
         if number in self.paths and self.paths[number]:
             self.paths[number].pop()
+def is_game_completed(board):
+        for number, positions in board.pairs.items():
+            if number not in board.paths:
+                return False
+            path = board.paths[number]
+            # Debe comenzar y terminar en las dos celdas originales
+            if not (positions[0] in path and positions[1] in path):
+                return False
+            # Verificamos que la última celda del path sea una de las metas
+            if path[0] not in positions or path[-1] not in positions:
+                return False
+        return True
+    

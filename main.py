@@ -2,6 +2,7 @@
 
 import pygame
 from board_parser import read_board_file
+from board import Board, is_game_completed 
 from board import Board
 from ui import draw_board, CELL_SIZE, MARGIN, FONT_SIZE
 
@@ -54,11 +55,30 @@ def main():
             elif event.type == pygame.MOUSEMOTION and dragging:
                 row, col = get_cell_from_mouse(event.pos)
                 if row != row1 or col != col1:
-                    if board.is_valid_move(row, col,row1, col1, current_number):
+                    if board.is_valid_move(row, col, row1, col1, current_number):
                         if (row, col) != board.paths[current_number][-1]:
-                            row1, col1 = row, col
-                            print(row, col, row1, col1)
-                            board.add_to_path(current_number, (row, col))
+                            value = board.grid[row][col]
+
+                            # Si llegamos al segundo número (pero no al mismo del inicio)
+                            if value == current_number and (row, col) != board.paths[current_number][0]:
+                                board.add_to_path(current_number, (row, col))
+                                dragging = False  # Detener el trazo
+                                current_number = None
+                                if is_game_completed(board):
+                                    font_big = pygame.font.SysFont("Arial", 36)
+                                    text = font_big.render("¡Juego terminado!", True, (0, 128, 0))
+                                    text_rect = text.get_rect(center=(width // 2, height // 2))
+                                    screen.blit(text, text_rect)
+                                    pygame.display.flip()
+                                    pygame.time.delay(2000)
+                                    running = False  # Cerrar el juego en el siguiente ciclo
+                                continue
+                                
+
+                            # Si es una celda vacía, continuar
+                            if value is None:
+                                row1, col1 = row, col
+                                board.add_to_path(current_number, (row, col))
 
             elif event.type == pygame.MOUSEBUTTONUP:
                 dragging = False
