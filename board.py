@@ -33,15 +33,30 @@ class Board:
         if number in self.paths and self.paths[number]:
             self.paths[number].pop()
 def is_game_completed(board):
-        for number, positions in board.pairs.items():
-            if number not in board.paths:
-                return False
-            path = board.paths[number]
-            # Debe comenzar y terminar en las dos celdas originales
-            if not (positions[0] in path and positions[1] in path):
-                return False
-            # Verificamos que la última celda del path sea una de las metas
-            if path[0] not in positions or path[-1] not in positions:
-                return False
-        return True
+    # Verifica que todos los pares estén conectados correctamente
+    for number, positions in board.pairs.items():
+        if number not in board.paths:
+            return False
+        path = board.paths[number]
+        if not (positions[0] in path and positions[1] in path):
+            return False
+        if path[0] not in positions or path[-1] not in positions:
+            return False
+
+    # Verifica que todas las celdas estén ocupadas
+    used_cells = set()
+    for path in board.paths.values():
+        for cell in path:
+            used_cells.add(cell)
+
+    # También contar las celdas que ya tienen un número fijo
+    for number, positions in board.pairs.items():
+        used_cells.update(positions)
+
+    total_cells = board.rows * board.cols
+    if len(used_cells) < total_cells:
+        return False
+
+    return True
+
     
