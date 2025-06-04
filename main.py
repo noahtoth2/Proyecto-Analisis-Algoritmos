@@ -110,6 +110,8 @@ def run_manual_game(screen, board, font, rows, cols):
 
     pygame.quit()
 
+    
+
 def has_dead_end(board, occupied):
     for r in range(board.rows):
         for c in range(board.cols):
@@ -130,7 +132,7 @@ def has_dead_end(board, occupied):
 
 
 
-def a_star_all_paths(start, goal, occupied, board, max_paths=250):
+def a_star_all_paths(start, goal, occupied, board, max_paths=2000):
     paths = []
     pq = []
     heapq.heappush(pq, (0, [start]))  # (priority, path)
@@ -204,7 +206,7 @@ def run_solver2(screen, board, font):
 
             draw_board(screen, board, font)
             pygame.display.flip()
-            #pygame.time.delay(5)
+            pygame.time.delay(5)
             pygame.event.pump()
 
             if solve(idx + 1):
